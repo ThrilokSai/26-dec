@@ -1,0 +1,266 @@
+package pageElementsAndroid;
+
+import java.util.concurrent.TimeUnit;
+
+import org.openqa.selenium.By;
+import org.openqa.selenium.Keys;
+
+import io.appium.java_client.AppiumDriver;
+import io.appium.java_client.android.AndroidDriver;
+import io.appium.java_client.android.AndroidElement;
+import io.appium.java_client.android.nativekey.AndroidKey;
+import io.appium.java_client.android.nativekey.KeyEvent;
+
+
+
+public class GiftCardPageAndroid {
+	
+
+	protected AndroidDriver<AndroidElement> driver = null;
+	
+	public GiftCardPageAndroid(AndroidDriver<AndroidElement> driver){
+		this.driver = driver;
+	}
+	
+	By google_widget = By.xpath("//*[@id='search_widget_super_g']");
+	By search_icon = By.xpath("//*[@id='navigation_button']");
+	By search_box = By.xpath("//*[@id='search_box']");
+	By search_button = By.xpath("//*[@contentDescription='Search']");
+	By open_with = By.xpath("//*[@class='android.widget.LinearLayout' and ./*[@id='icon'] and ./*[@text='Money']]");
+	By getCardName_deeplink = By.xpath("//*[@id='cardName']");
+	By btn_addCard = By.xpath("//*[@id='btn_action']");
+	By cardNumber= By.xpath("//*[@id='cardNumber']");
+	By cardPin= By.xpath("//*[@id='cardPin']");
+	By cardAddedPopupheader = By.xpath("//*[@id='info_title']");
+	By cardAddedPopupcontent = By.xpath("//*[@id='info_body']");
+	By clickOK = By.xpath("//*[@text='OK']");
+	By maxCardAddedPopupheader = By.xpath("//*[@id='info_title']");      
+	By maxCardAddedPopupcontent = By.xpath("//*[@id='info_body']");
+	By cardalreadyAddedPopupHeader = By.xpath("//*[@id='info_title']");
+	By cardalreadyAddedPopupContent = By.xpath("//*[@id='info_body']");  
+	By clickClosepopup = By.xpath("//*[@id='primary_bt']"); 
+	By getCardName_manually = By.xpath("//*[@id='card_name']");
+	
+	/*==================21 dec===================*/
+	By txt_GiftCardNumber_Android = By.xpath("//*[@id='card_number_edit']");
+	By txt_GiftCardPIN_Android = By.xpath("//*[@id='card_pin_edit']");
+	
+	
+	
+	public void enterlink(String link) {
+		driver.pressKey(new KeyEvent(AndroidKey.HOME));
+		driver.manage().timeouts().implicitlyWait(5,TimeUnit.SECONDS) ;
+		driver.findElement(google_widget).click();
+		driver.findElement((search_icon)).click();
+		driver.findElement(search_box).sendKeys(link);
+		driver.findElement(search_button).click();
+	}
+	
+	public void openlinkwithmoneyapp() {
+		driver.findElement(open_with).click();
+	}
+	
+	public static String cardType;
+	public String getCardType() {
+		try {
+		 cardType=driver.findElement(getCardName_deeplink).getText();
+		 return cardType;
+	}
+		catch(Exception e) {
+			cardType=driver.findElement(getCardName_manually).getText();
+			 return cardType;
+		}
+	}
+	
+	
+	
+	public String getCardNumber() {
+		return driver.findElement(cardNumber).getText() ;
+		
+	}
+	public String getCardPIN() {
+		return driver.findElement(cardPin).getText() ;
+		
+	}
+	public void clickAddCard() {
+		driver.findElement(btn_addCard).click();
+	}
+	public static int i=0;
+	public String cardAddedPopupHeader() {
+		i++;
+		return driver.findElement(cardAddedPopupheader).getText();
+		
+	}
+	public String cardAddedPopupcontent() {
+		return driver.findElement(cardAddedPopupcontent).getText();
+	}
+	
+	public void clickOK() {
+		driver.findElement(clickOK).click();
+	}
+	
+	public String maxCardsAddedPopupHeader() {
+		
+		return driver.findElement(maxCardAddedPopupheader).getText();
+		
+	}
+	public String maxCardsAddedPopupcontent() {
+		return driver.findElement(maxCardAddedPopupcontent).getText();
+	}
+
+    public String cardAlreadyAddedPopupHeader() {
+		System.out.println(driver.findElement(cardalreadyAddedPopupHeader).getText());
+		return driver.findElement(cardalreadyAddedPopupHeader).getText();
+		
+	}
+	public String cardAlreadyAddedPopupContent() {
+		System.out.println(driver.findElement(cardalreadyAddedPopupContent).getText());
+		return driver.findElement(cardalreadyAddedPopupContent).getText();
+	}
+	
+	public void clickClose() {
+		 driver.findElement(clickClosepopup).click();
+	}
+	
+	/*============================21 dec ===================*/
+	public void enterGiftCardNumber(String GiftCardNumber) {
+		
+		driver.findElement(txt_GiftCardNumber_Android ).sendKeys(GiftCardNumber);
+	}
+
+	public void enterGiftCardPIN(String GiftCardPIN) {
+		driver.findElement(txt_GiftCardPIN_Android).sendKeys(GiftCardPIN);
+	}
+	
+	
+	
+	/*===============================21 dec added==================*/
+	
+	By validateCardName = By.xpath("//*[@id='txtCardName']");
+	By textAvailable = By.xpath("//*[@id='lblAvailableTop']");
+	By refreshText = By.xpath("//*[@id='ctaRefreshCard']");
+	By refreshButton = By.xpath("//*[@id='refresh_icon']");
+	By settingsButton = By.xpath("//*[@id='ctaSettings']");
+	
+	By cardDetails = By.xpath("//*[@id='lblGiftcardHeading']");
+	By giftCardBody = By.xpath("//*[@id='lblGiftcardBody']");
+	
+	By textStore = By.xpath("//*[@id='lblInstore']");
+	By cardNumberStore = By.xpath("//*[@id='txtCardNumber']");
+	
+	By textOnline = By.xpath("//*[@id='lblOnline']");
+	By cardNumberOnline = By.xpath("//*[@id='txtOnlineCardNumber']");
+	
+	By textPin = By.xpath("//*[@id='txtPinTitle']");
+	By pinNumber = By.xpath("//*[@id='txtCardPin']");
+	By infoButton =By.xpath("//*[@id='btn_info']");
+	By transactions = By.xpath("//*[@id='transactions_view']");
+	By barcodeIcon = By.xpath("//*[@id='imgIcon']");
+	By showbarcode = By.xpath("//*[@id='txtLabel']");
+	
+	
+	public void validateCommonCardDetails(String cardNumber, String pin) {
+		
+		String expectedCardName = cardType;
+		String actualCardname= driver.findElement(validateCardName).getText();
+		org.junit.Assert.assertEquals(expectedCardName, actualCardname);
+		
+		
+		String expectedAvailable= "Available";
+		String actualAvailable = driver.findElement(textAvailable).getText();
+		org.junit.Assert.assertEquals(expectedAvailable, actualAvailable);
+		
+		org.junit.Assert.assertTrue(driver.findElement(refreshText).isDisplayed());
+		org.junit.Assert.assertTrue(driver.findElement(refreshButton).isDisplayed());
+		org.junit.Assert.assertTrue(driver.findElement(settingsButton).isDisplayed());
+		
+		if(cardType.equals("Woolworths Kindness Card")||cardType.equals("EDM Shopping Card") ){
+		String expectedCardDetails= "Gift Card details:";
+		String actualCardDetails= driver.findElement(cardDetails).getText();
+		org.junit.Assert.assertEquals(expectedCardDetails, actualCardDetails);
+		}
+		else {
+			String expectedCardDetails= "eGift Card details:";
+			String actualCardDetails= driver.findElement(cardDetails).getText();
+			org.junit.Assert.assertEquals(expectedCardDetails, actualCardDetails);
+		}
+		
+		if(cardType.equals("eGift Card") ||cardType.equals("EDM Shopping Card")) {
+		String expectedText= "Redeem in-store or online";
+		String actualText= driver.findElement(giftCardBody).getText();
+		org.junit.Assert.assertEquals(expectedText, actualText);
+		}
+		else if(cardType.equals("Simply Groceries Gift Card Digital")||cardType.equals("Essentials Gift Card Digital")) {
+			String expectedText= "Redeem in-store only";
+			String actualText= driver.findElement(giftCardBody).getText();
+			org.junit.Assert.assertEquals(expectedText, actualText);
+		}
+		else if(cardType.equals("Woolworths Kindness Card")){
+			String expectedText= "Redeem online only";
+			String actualText= driver.findElement(giftCardBody).getText();
+			org.junit.Assert.assertEquals(expectedText, actualText);
+		}
+		
+		if(cardType.equals("eGift Card") ||cardType.equals("Simply Groceries Gift Card Digital") ||cardType.equals("Essentials Gift Card Digital")) {
+		String expectedInstoreredemption= "For In-Store redemption please enter:";
+		String actualInstoreredemption = driver.findElement(textStore).getText();
+		org.junit.Assert.assertEquals(expectedInstoreredemption, actualInstoreredemption);
+		org.junit.Assert.assertTrue(driver.findElement(cardNumberStore).isDisplayed());
+		}
+		
+		if(cardType.equals("eGift Card")|| cardType.equals("Woolworths Kindness Card") ||cardType.equals("EDM Shopping Card") ) {
+			
+		String expectedOnlineredemption= "For Online redemption please enter:";
+		if(cardType.equals("Woolworths Kindness Card") ) {
+			String actualOnlineredemption = driver.findElement(textStore).getText();
+			org.junit.Assert.assertEquals(expectedOnlineredemption, actualOnlineredemption);
+		}
+		else {
+			String actualOnlineredemption = driver.findElement(textStore).getText();
+		 org.junit.Assert.assertEquals(expectedOnlineredemption, actualOnlineredemption);
+		}
+		}
+		
+		else if (cardType.equals("Simply Groceries Gift Card Digital")|| cardType.equals("Essentials Gift Card Digital")){
+			String expectedOnlineredemption= "For balance check please enter";
+			String actualOnlineredemption = driver.findElement(textOnline).getText();
+			org.junit.Assert.assertEquals(expectedOnlineredemption, actualOnlineredemption);
+		}
+		
+		
+		if(cardType.equals("Woolworths Kindness Card")||cardType.equals("EDM Shopping Card"))
+			org.junit.Assert.assertTrue(driver.findElement(cardNumberStore).isDisplayed());
+		else
+		org.junit.Assert.assertTrue(driver.findElement(cardNumberOnline).isDisplayed());
+		
+		String expectedTextPin= "PIN";
+		String actualTextPin = driver.findElement(textPin).getText();
+		org.junit.Assert.assertEquals(expectedTextPin, actualTextPin);
+		
+		
+		String actualPIN = driver.findElement(pinNumber).getText();
+		org.junit.Assert.assertTrue(actualPIN.contains(pin));
+		
+		org.junit.Assert.assertTrue(driver.findElement(infoButton).isDisplayed());
+		
+		String expectedTransactionslabel= "Transactions";
+		String actualTransactionslabel = driver.findElement(transactions).getText();
+		org.junit.Assert.assertEquals(expectedTransactionslabel, actualTransactionslabel);
+		
+		if(!cardType.equals("Woolworths Kindness Card")) {
+		org.junit.Assert.assertTrue(driver.findElement(barcodeIcon).isDisplayed());
+		String expectedShowBarcode= "Show Barcode";
+		String actualShowBarcode = driver.findElement(showbarcode).getText();
+		org.junit.Assert.assertEquals(expectedShowBarcode, actualShowBarcode);
+		
+	}}
+	
+	public void selectCard() {
+		
+			driver.findElement(By.xpath("//*[@text='"+cardType+"']")).click();
+		
+	}
+	
+	
+	
+}

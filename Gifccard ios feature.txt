@@ -1,0 +1,62 @@
+@iOS
+Feature: GiftCard_IOS
+  Test the Gift card test senarios
+
+  @Sanity @test
+  Scenario Outline: Add New Gift Card using Card number and PIN number
+    Given Enter Gift card Number "<cardNumber>"
+    And Enter Gift Card PIN number "<cardPIN>"
+    Then To Check Gift Card Added
+
+    Examples: 
+      | cardNumber          | cardPIN |
+      | 6280003091111184071 |    3043 |
+
+  @Sanity 
+  Scenario Outline: Add New Gift Card using Link
+    Given Launch the Gift Card link "<giftCardLink>"
+    And Click Open button on Webpage Popup
+    And Click the Add Card button
+    When Click OK button to Add Gift card into Money App
+
+    Examples: 
+      | cardNumber          | cardPIN | available | giftCardLink                                                                                                                                                                                                                                     |
+      | 6280003091111184071 |    3043 | $0.00     | https://giftcards.woolworths.com.au/viewEgiftCard?token=ek1:e4c5591c0ebc94da94baa723279f07aa&usa=old:eb005392945577a44de4f60c7fedf268a9553aec3b3295340bcc11c5bcdee760&utm_source=everydaygiftcards&utm_medium=email&utm_campaign=send_egift_card |
+
+ @Sam 
+  Scenario Outline: To validate alert message by adding 10 cards via deeplink
+    Given Launch the Gift Card link "<giftCardLink>"
+    And Click Open button on Webpage Popup
+    And Fetch giftcard type
+    And Click the Add Card button
+    Then Validate the popup alert
+
+    Examples: 
+     |giftCardLink|
+    |https://giftcards.woolworths.com.au/viewEgiftCard?id=-ZfS1P| 
+     |https://giftcards.woolworths.com.au/viewEgiftCard?id=-v5D7I|
+     |https://giftcards.woolworths.com.au/viewEgiftCard?token=Tzd5MFdFWklDbWZDWk02dGJjVnI4R2RtTVNiRW80MUttVXU0ZFA3eWpwNlNSZ1BGMWp1Z3dzZEZIMlc4U0praEdXeGhvUVZGMW5XT243OFZDYzBvMHc9PQ==&utm_source=giftcards&utm_medium=email&utm_campaign=send_egift_card|
+     |https://giftcards.woolworths.com.au/viewEgiftCard?token=ek1:e4c5591c0ebc94da94baa723279f07aa&usa=old:eb005392945577a44de4f60c7fedf268a9553aec3b3295340bcc11c5bcdee760&utm_source=everydaygiftcards&utm_medium=email&utm_campaign=send_egift_card|
+     |https://giftcards.woolworths.com.au/viewEgiftCard?token=cnZMRG9UZVB5Ly9DczdPZC9ORFBvSlE0MlppRGdMV0JtNmdELzBsbTlQYW9QY1Y5dDNvRnIrWVhQT21ub0FpQ2tHaU5LaW5FY21YZFgwWStJR3pZaGc9PQ==&utm_source=giftcards&utm_medium=email&utm_campaign=send_egift_card|
+     |https://giftcards.woolworths.com.au/viewEgiftCard?token=aXRhaUVWa3JyUkFaR3I2emZUTHY3UTQ3UGthMUJJclVTS1dKU1QxbE1Ka2RrQzNoVEF1dGh6cHBtWWgwRFdwWkJjOGhNejl3YnVHdlpVRkNSRytiK2c9PQ==&utm_source=giftcards&utm_medium=email&utm_campaign=send_egift_card|
+     |https://giftcards.woolworths.com.au/viewEgiftCard?id=23GXmd|
+     |https://giftcards.woolworths.com.au/viewEgiftCard?token=N3V2ZFMrQ3lBU2tLM2pHS3JrVU1NZThFK2M3d0FVL1JNeE9lbnNzemNVdytCUERqK0tZcCs0TXJKSkRWaXhLY1NBVXBUWkU5YlVxMVErekEzY2xXZVE9PQ==&utm_source=giftcards&utm_medium=email&utm_campaign=send_egift_card|
+     |https://giftcards.woolworths.com.au/viewEgiftCard?token=N2d0Wjg1R2cwNEI0RnRQOHNsVmJMSWRzREFiQ1V6cVJUS043TFNHTUM0akd2ck55eFJlYVczS2FHelI3NU5VMG1BdTJvTGViWVVjM3JyTkZxeHNrQ2c9PQ==&utm_source=giftcards&utm_medium=email&utm_campaign=send_egift_card|
+     |https://giftcards.woolworths.com.au/viewEgiftCard?token=L2I4SmZueEJxUmQ1WFZEbXM4czI0UGdTWU83UDhyME1iSnJkT1gzTnpjR1d1c0F4SEJnOEh6T2w1Q3ZybzZwQkhsM0cyVG5IZm5FVkVsUVRSak4yaUE9PQ==&utm_source=giftcards&utm_medium=email&utm_campaign=send_egift_card|
+     
+  
+    @Sample 
+      Scenario Outline: To validate alert message when card is already added to the list
+      Given Launch the Gift Card link "<giftCardLink>"
+      And Click Open button on Webpage Popup
+      And Fetch giftcard type
+      And Click the Add Card button
+      Then Validate the popup alert
+      Then Launch the Gift Card link "<giftCardLink>"
+      And Click Open button on Webpage Popup
+      Then Validate the card already added popup alert "<cardtype>"
+      
+     Examples: 
+     |cardtype                |giftCardLink| 
+     |eGift Card              |https://giftcards.woolworths.com.au/viewEgiftCard?id=-ZfS1P| 
+     |Woolworths Kindness Card| https://giftcards.woolworths.com.au/viewEgiftCard?token=Tzd5MFdFWklDbWZDWk02dGJjVnI4R2RtTVNiRW80MUttVXU0ZFA3eWpwNlNSZ1BGMWp1Z3dzZEZIMlc4U0praEdXeGhvUVZGMW5XT243OFZDYzBvMHc9PQ==&utm_source=giftcards&utm_medium=email&utm_campaign=send_egift_card|

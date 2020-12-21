@@ -1,0 +1,187 @@
+package stepDefinitionsAndroid;
+
+import java.net.MalformedURLException;
+import java.util.Set;
+import java.util.concurrent.TimeUnit;
+
+import org.openqa.selenium.By;
+import org.openqa.selenium.remote.DesiredCapabilities;
+
+import cucumber.api.java.en.Given;
+import cucumber.api.java.en.Then;
+import cucumber.api.java.en.When;
+import io.appium.java_client.android.AndroidDriver;
+import io.appium.java_client.android.AndroidElement;
+import junit.framework.Assert;
+import pageElements.PageElementsAndroid;
+import pageElementsAndroid.GiftCardPageAndroid;
+import pageElementsAndroid.HomePageAndroid;
+import supportLibraries.ReusableLibraries;
+import supportLibraries.TraceLog;
+import testHooks.Hooks;
+
+public class GiftCardAndroidSteps {
+
+	//private String accessKey = "eyJhbGciOiJIUzI1NiJ9.eyJ4cC51IjoxMjQ2LCJ4cC5wIjoxMjE4LCJ4cC5tIjoxNjA0MzAzOTMzODc0LCJleHAiOjE5MTk2NjM5MzQsImlzcyI6ImNvbS5leHBlcml0ZXN0In0.99fv1qGTXCYFYyUvxx69iG_4VuFcwVymny3cpN3Ts4E";
+		protected AndroidDriver<AndroidElement> driver = null;
+		Hooks hooks = new Hooks(); 
+		DesiredCapabilities dc = new DesiredCapabilities();
+		public TraceLog _traceLog;
+		PageElementsAndroid _locator;
+		ReusableLibraries _reusableLibraries;
+		GiftCardPageAndroid _GC;
+		HomePageAndroid _home;
+
+		public GiftCardAndroidSteps() throws MalformedURLException {
+			_traceLog = new TraceLog();
+			_reusableLibraries = new ReusableLibraries();
+			_locator = new PageElementsAndroid();
+			driver = hooks.InitAppiumDriverAndroid();
+			_GC = new GiftCardPageAndroid(driver);
+			_home = new HomePageAndroid(driver);
+		}
+		
+		@Given("^Launch the browser and enter gift card link \"([^\"]*)\"$")
+		public void launch_the_browser_and_enter_gift_card_link(String gcLink) {
+		   _GC.enterlink(gcLink); 
+		  
+		}
+
+		@Given("^Click Open button on Webpage Popup$")
+		public void click_Open_button_on_Webpage_Popup() {
+		driver.manage().timeouts().implicitlyWait(15,TimeUnit.SECONDS) ; 
+			_GC.openlinkwithmoneyapp();
+			
+		}
+		
+		
+		@Then("^Fetch giftcard type$")
+		public void fetch_giftcard_type() {
+			   _GC.getCardType();
+		   System.out.println(_GC.getCardType());
+		  
+		}
+
+		
+		@Given("^Validate gift card number and pin number \"([^\"]*)\" \"([^\"]*)\"$")
+		public void validate_gift_card_number_and_pin_number(String cardNumber, String Pin) {
+		
+						String actualCardNumber = _GC.getCardNumber();
+			org.junit.Assert.assertEquals(cardNumber, actualCardNumber);
+			String actualPIN = _GC.getCardPIN();
+			org.junit.Assert.assertEquals(Pin, actualPIN);
+			
+		}
+
+	
+	
+		
+		@Then("^Click the Add Card button$")
+		public void click_the_Add_Card_button() {
+		    _GC.clickAddCard();
+		}
+
+		@Then("^Validate the gift card added popup$")
+		public void validate_the_gift_card_added_popup() {
+			
+		  if(GiftCardPageAndroid.cardType.equals("EDM Shopping Card")) {
+			 
+			  String expected_header = "Keep the Gift Card";
+			  String actual_header = _GC.cardAddedPopupHeader();
+			  org.junit.Assert.assertEquals(expected_header , actual_header );
+				
+			
+			  String expected_content ="Please hold onto the physical Gift Card and present it at checkout for in-store transactions at participating stores.";
+			  String actual_content = _GC.cardAddedPopupcontent();
+			  org.junit.Assert.assertEquals(expected_content , actual_content );
+			  _GC.clickOK();
+			  driver.manage().timeouts().implicitlyWait(10,TimeUnit.SECONDS);
+			  _GC.clickOK();
+		  }
+			
+		  else {
+			String expected_header = GiftCardPageAndroid.cardType+" Added";
+			driver.manage().timeouts().implicitlyWait(10,TimeUnit.SECONDS);
+			String actual_header = _GC.cardAddedPopupHeader();
+			org.junit.Assert.assertEquals(expected_header , actual_header );
+			
+			
+			String expected_content ="Tap on the card to see your card details and transaction history or remove it from your stack.";
+			String actual_content = _GC.cardAddedPopupcontent();
+			org.junit.Assert.assertEquals(expected_content , actual_content );
+			_GC.clickOK();
+				
+		  }}
+		
+		@Then("^Validate The maximum cards added popup$")
+		public void validate_the_maximum_cards_added_popup() {
+		  
+			if(_GC.i<9) {
+				System.out.println(_GC.i);
+				validate_the_gift_card_added_popup();
+			}
+			
+			else {
+			String expected_header = "Maximum Cards Reached";
+			String actual_header = _GC.maxCardsAddedPopupHeader();
+			org.junit.Assert.assertEquals(expected_header , actual_header );
+			
+			String expected_content =_GC.cardType+" added but you’ve reached the maximum number of cards (10). Please delete any unused cards.";
+			String actual_content = _GC.maxCardsAddedPopupcontent();
+			org.junit.Assert.assertEquals(expected_content , actual_content );
+			_GC.clickOK();
+			}
+						
+		}
+		
+		@Then("^Validate the gift card already added popup$")
+		public void card_already_added_popup_alert() {
+			
+			
+			String expected_header ="Unable to add "+_GC.cardType;
+			String actual_header = _GC.cardAlreadyAddedPopupHeader();
+			org.junit.Assert.assertEquals(expected_header , actual_header );
+			
+			String expected_content ="It seems you have already added this card to your list. Please add another card.";
+			String actual_content = _GC.cardAlreadyAddedPopupContent();
+			org.junit.Assert.assertEquals(expected_content , actual_content );
+			_GC.clickClose(); 
+			
+		}
+		
+
+		// Add GC
+		@Given("^Enter Gift card Number \"([^\"]*)\"$")
+		public void enter_Gift_card_Number(String cardNumber) throws InterruptedException, MalformedURLException {
+				
+			_home.clickAddGiftOrRewards();
+			driver.manage().timeouts().implicitlyWait(10,TimeUnit.SECONDS);
+			_GC.enterGiftCardNumber(cardNumber);
+			driver.manage().timeouts().implicitlyWait(3,TimeUnit.SECONDS);
+			_GC.getCardType();
+				
+			}
+
+		@Given("^Enter Gift Card PIN number \"([^\"]*)\"$")
+		public void enter_Gift_Card_PIN_number(String cardPIN) throws InterruptedException {
+
+			_GC.enterGiftCardPIN(cardPIN);
+			//Thread.sleep(5000);
+			driver.manage().timeouts().implicitlyWait(5,TimeUnit.SECONDS) ;
+		}
+
+		//---------------------------------------------------------------------------------------//
+
+
+		@Then("^Click on the card in the list to open card details$")
+		public void selectCard() {
+			
+		    _GC.selectCard();
+		}
+	
+		@Then("^Validate the card details \"([^\"]*)\" \"([^\"]*)\"$")
+		public void validateCardDetails(String cardNumber, String pin) {
+		    _GC.validateCommonCardDetails(cardNumber, pin);
+		}
+	
+}

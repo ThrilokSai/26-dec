@@ -1,0 +1,173 @@
+package stepDefinitions;
+
+import cucumber.api.java.en.Given;
+import cucumber.api.java.en.Then;
+import cucumber.api.java.en.When;
+import io.appium.java_client.ios.IOSDriver;
+import io.appium.java_client.ios.IOSElement;
+import pageElements.PageElementsIOS;
+import pageElementsIOS.GiftCardPageIOS;
+import pageElementsIOS.HomePageIOS;
+import supportLibraries.ReusableLibraries;
+import supportLibraries.TraceLog;
+import testHooks.Hooks;
+
+import java.net.MalformedURLException;
+import java.util.Set;
+import java.util.concurrent.TimeUnit;
+
+import org.openqa.selenium.By;
+import org.openqa.selenium.remote.DesiredCapabilities;
+
+public class GiftCardIOSSteps {
+
+	//private String accessKey = "eyJhbGciOiJIUzI1NiJ9.eyJ4cC51IjoxMjQ2LCJ4cC5wIjoxMjE4LCJ4cC5tIjoxNjA0MzAzOTMzODc0LCJleHAiOjE5MTk2NjM5MzQsImlzcyI6ImNvbS5leHBlcml0ZXN0In0.99fv1qGTXCYFYyUvxx69iG_4VuFcwVymny3cpN3Ts4E";
+	protected IOSDriver<IOSElement> driver = null;
+	Hooks hooks = new Hooks(); 
+	DesiredCapabilities dc = new DesiredCapabilities();
+	public TraceLog _traceLog;
+	PageElementsIOS _locator;
+	ReusableLibraries _reusableLibraries;
+	GiftCardPageIOS _GC;
+	HomePageIOS _home;
+
+	public GiftCardIOSSteps() throws MalformedURLException {
+		_traceLog = new TraceLog();
+		_reusableLibraries = new ReusableLibraries();
+		_locator = new PageElementsIOS();
+		driver = hooks.InitAppiumDriverIOS();
+		_GC = new GiftCardPageIOS(driver);
+		_home = new HomePageIOS(driver);
+	}
+
+	// Add GC
+	@Given("^Enter Gift card Number \"([^\"]*)\"$")
+	public void enter_Gift_card_Number(String cardNumber) throws InterruptedException, MalformedURLException {
+			
+		_home.clickAddGiftOrRewards();
+		driver.manage().timeouts().implicitlyWait(5,TimeUnit.SECONDS);
+		_GC.enterGiftCardNumber(cardNumber);
+		driver.manage().timeouts().implicitlyWait(3,TimeUnit.SECONDS);
+		
+		/*
+		if(driver.findElement(By.xpath("//*[@text='add icon']"))!= null){
+			_home.clickAddGiftOrRewards();
+			}else{
+				_GC.enterGiftCardNumber("6280003091111184071");
+				driver.manage().timeouts().implicitlyWait(3,TimeUnit.SECONDS);
+			}
+		*/	
+		}
+
+	@Given("^Enter Gift Card PIN number \"([^\"]*)\"$")
+	public void enter_Gift_Card_PIN_number(String pin) throws InterruptedException {
+
+		_GC.enterGiftCardPIN(pin);
+		//Thread.sleep(5000);
+		driver.manage().timeouts().implicitlyWait(5,TimeUnit.SECONDS) ;
+	}
+
+	@Then("^To Check Gift Card Added$")
+	public void to_Check_Gift_Card_Added() throws InterruptedException {
+
+		_GC.clickAddCard();
+		//Thread.sleep(10000);
+		driver.manage().timeouts().implicitlyWait(10,TimeUnit.SECONDS) ;
+
+		// Keep the Gift Card
+		//_GC.clickOK();
+		//Thread.sleep(15000);
+		driver.manage().timeouts().implicitlyWait(15,TimeUnit.SECONDS) ;
+
+		// Gift Card Added Popup
+		_GC.clickGiftCardAddedOK();
+
+		System.out.println("Report URL: " + driver.getCapabilities().getCapability("reportUrl"));
+		//driver.quit();
+	}
+
+	// Add GC via link
+	@Given("^Launch the Gift Card link \"([^\"]*)\"$")
+	public void launch_the_Gift_Card_link(String giftCardUrl1) throws InterruptedException, MalformedURLException {
+
+		driver.navigate().to(giftCardUrl1);
+		//Thread.sleep(2000);
+		driver.manage().timeouts().implicitlyWait(2,TimeUnit.SECONDS) ;
+	}
+
+	@Given("^Click Open button on Webpage Popup$")
+	public void click_Open_button_on_Webpage_Popup() throws InterruptedException {
+
+		// Configure to Popup handler
+		Set<String> contexts = driver.getContextHandles();
+		for (String context : contexts) {
+			if (context.contains("NATIVE_APP")) {
+				driver.context(context);
+				break;
+			}
+		}
+		
+		//Click Open button Webpage Popup
+		_GC.clickOpen();
+		//Thread.sleep(3000);
+		driver.manage().timeouts().implicitlyWait(3,TimeUnit.SECONDS) ;
+	}
+	
+	
+	
+	@Given("^Click the Add Card button$")
+	public void click_the_Add_Card_button() {
+		// Click "Add Card" on Pop-up
+		_GC.clickAddCard();
+	}
+	
+	
+
+	@When("^Click OK button to Add Gift card into Money App$")
+	public void click_OK_button_to_Add_Gift_card_into_Money_App() throws InterruptedException {	
+		//eGift Card Added - Head
+		String actualGiftCardAddedText = _GC.ReadPopupTexts();
+		String expectedGiftCardText = "eGift Card Added";	
+		org.junit.Assert.assertEquals(expectedGiftCardText , actualGiftCardAddedText );
+
+		//eGift Card Added - Body Texts
+		String expectedGiftCardTextConfirm = "Tap on the card to see your card details and transaction history or remove it from your stack."; 
+		String actualGiftCardAddedBodyText = _GC.ReadPopupBodyTexts();
+		org.junit.Assert.assertEquals(expectedGiftCardTextConfirm, actualGiftCardAddedBodyText);
+
+		driver.manage().timeouts().implicitlyWait(5,TimeUnit.SECONDS) ;
+		_GC.ClickOK();
+		//Thread.sleep(3000);
+	}
+	// End Add GC via link
+	
+	//=======================================15dec thrilok=================//
+	@Given("^Fetch giftcard type$")
+	public void fetch_giftcard_type() {
+		// Click "Add Card" on Pop-up
+		_GC.getGiftcardType();
+	}
+
+	@Then("^Validate the popup alert$")
+	public void validate_the_popup_alert() {
+		_GC.validate_popup();
+		driver.manage().timeouts().implicitlyWait(5,TimeUnit.SECONDS) ;
+		_GC.ClickOK();
+	}
+	
+	@Then("^Validate the card already added popup alert \"([^\"]*)\"$")
+	public void card_already_added_popup_alert(String cardType) {
+		
+		String expected_header ="Unable to add "+cardType;
+		String actual_header = _GC.validate_card_already_added_popup_header(cardType);
+		org.junit.Assert.assertEquals(expected_header , actual_header );
+		
+		String expected_content ="It seems you have already added this card to your list. Please add another card.";
+		String actual_content = _GC.validate_card_already_added_popup_content();
+		org.junit.Assert.assertEquals(expected_content , actual_content );
+		_GC.clickClose();
+		
+	}
+	
+	
+}
